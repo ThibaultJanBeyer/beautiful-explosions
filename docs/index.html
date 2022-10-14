@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>beautiful-web-animations | examples</title>
+</head>
+<body>
+  <h1>beautiful-web-animations | examples</h1>
+  <h2>Bubble Explosion</h2>
+  <div style="display: inline-block;">Click Me</div>
+</body>
+<script type="module">
+  import { BubbleExplosion } from '../dist/index.js'
+  BubbleExplosion({ element: document.querySelector('div'), content: '✅' })
+</script>
+</html>
