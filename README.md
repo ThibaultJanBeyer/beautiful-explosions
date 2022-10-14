@@ -2,6 +2,8 @@
 
 Yet another collection of pre-made animations made for the web :)
 
+See them all in action here: https://thibaultjanbeyer.github.io/beautiful-web-animations/
+
 ## Bubble Explosion
 
 Usage:
@@ -14,4 +16,6 @@ BubbleExplosion({
 })
 ```
 
-See examples section
+See examples section:
+- [default](https://thibaultjanbeyer.github.io/beautiful-web-animations/#be)
+- [with custom content](https://thibaultjanbeyer.github.io/beautiful-web-animations/#bec)
