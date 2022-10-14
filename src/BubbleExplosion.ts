@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export const BubbleExplosion = ({
   element,
   eventListener = 'click',
@@ -168,6 +170,7 @@ export const BubbleExplosion = ({
     }
   }
 
-  customElements.define('ba-bubble-explosion', BE)
-  document.body.append(createElement({ tag: 'ba-bubble-explosion' }))
+  const componentName = `ba-bubble-explosion-${uuidv4()}`
+  customElements.define(componentName, BE)
+  document.body.append(createElement({ tag: componentName }))
 }

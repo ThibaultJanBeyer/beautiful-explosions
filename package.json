@@ -8,12 +8,13 @@
   "author": "Thibault Jan Beyer <thibault.beyer@gmail.com>",
   "license": "GLP-3.0",
   "scripts": {
-    "build": "esbuild ./src/index.ts --outdir=dist --bundle --minify --sourcemap --target=es6  --format=esm",
-    "build:watch": "esbuild ./src/index.ts --outfile=dist/index.js --bundle --sourcemap --watch --format=esm",
+    "build": "esbuild ./src/index.ts --outfile=dist/index.js --bundle --sourcemap --format=esm",
+    "build:watch": "yarn build --watch",
     "lint": "eslint --ext .js,.ts ./src",
-    "start": "http-server . --cors true -o /test & yarn build:watch"
+    "start": "http-server . --cors true -o /docs & yarn build:watch"
   },
   "devDependencies": {
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.0.0",
     "esbuild": "^0.15.11",
@@ -31,6 +32,7 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
-    "rollup": "^3.1.0"
+    "rollup": "^3.1.0",
+    "uuid": "^9.0.0"
   }
 }
