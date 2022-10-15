@@ -4,6 +4,7 @@
   "description": "Yet another library for beautiful pre-made animations for the web in vanilla js with shadow dom",
   "main": "./docs/index.js",
   "type": "module",
+  "types": "./docs/index.d.ts",
   "repository": "git@github.com:ThibaultJanBeyer/beautiful-explosions.git",
   "author": "Thibault Jan Beyer <thibault.beyer@gmail.com>",
   "license": "GLP-3.0",
