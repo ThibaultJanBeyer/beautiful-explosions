@@ -55,7 +55,7 @@ export const BubbleExplosion = ({
       super()
       this.attachShadow({ mode: 'open' })
 
-      let css = `
+      let css = /*CSS*/`
         .element--explode {
           animation-duration: 200ms;
           animation-name: implode;
@@ -104,7 +104,7 @@ export const BubbleExplosion = ({
         const size = Math.min(element.offsetHeight, element.offsetWidth)
         const temp = 1 + random(0, size)
         const tempR = random(0, 360)
-        css += `
+        css += /*CSS*/`
           .bubble:nth-child(${index}) {
             width: ${temp}px;
             height: ${temp}px;
