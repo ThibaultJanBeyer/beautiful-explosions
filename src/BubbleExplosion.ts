@@ -8,7 +8,7 @@ export const BubbleExplosion = ({
   element: HTMLElement
   eventListener?: string
   content?: CSSStyleDeclaration['content']
-}): void => {
+}): { trigger: () => void } => {
   function random(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
@@ -141,7 +141,11 @@ export const BubbleExplosion = ({
         appendElement: this.shadowRoot,
       })
 
-      element.addEventListener(eventListener, () => {
+      if(eventListener)
+        element.addEventListener(eventListener, this.trigger)
+    }
+
+    trigger = () => {
         for (let j = 0; j < 30; j++) this.createBubble(element)
         updateStyle(element, {
           transition:
@@ -149,8 +153,9 @@ export const BubbleExplosion = ({
           transform: 'scale(0, 0) translate(50%, 50%)',
           pointerEvents: 'none',
         })
-        setTimeout(() => (element.style.display = 'none'), 200)
-      })
+      setTimeout(() => (element.style.display = 'none'), 200)
+      if(eventListener)
+        element.removeEventListener(eventListener, this.trigger)
     }
 
     createBubble(targetEl: HTMLElement) {
@@ -172,5 +177,10 @@ export const BubbleExplosion = ({
 
   const componentName = `ba-bubble-explosion-${uuidv4()}`
   customElements.define(componentName, BE)
-  document.body.append(createElement({ tag: componentName }))
+  const shadowElement = createElement({ tag: componentName }) as BE
+  document.body.append(shadowElement)
+
+  return {
+    trigger: () => shadowElement.trigger()
+  }
 }

@@ -163,17 +163,21 @@ var BubbleExplosion = ({
         tag: "div",
         appendElement: this.shadowRoot
       });
-      element.addEventListener(eventListener, () => {
-        for (let j = 0; j < 30; j++)
-          this.createBubble(element);
-        updateStyle(element, {
-          transition: "opacity 200ms ease-in-out, transform 200ms ease-in-out, font-size 200ms ease-in-out",
-          transform: "scale(0, 0) translate(50%, 50%)",
-          pointerEvents: "none"
-        });
-        setTimeout(() => element.style.display = "none", 200);
-      });
+      if (eventListener)
+        element.addEventListener(eventListener, this.trigger);
     }
+    trigger = () => {
+      for (let j = 0; j < 30; j++)
+        this.createBubble(element);
+      updateStyle(element, {
+        transition: "opacity 200ms ease-in-out, transform 200ms ease-in-out, font-size 200ms ease-in-out",
+        transform: "scale(0, 0) translate(50%, 50%)",
+        pointerEvents: "none"
+      });
+      setTimeout(() => element.style.display = "none", 200);
+      if (eventListener)
+        element.removeEventListener(eventListener, this.trigger);
+    };
     createBubble(targetEl) {
       const el = createElement({
         tag: "span",
@@ -193,7 +197,11 @@ var BubbleExplosion = ({
   }
   const componentName = `ba-bubble-explosion-${v4_default()}`;
   customElements.define(componentName, BE);
-  document.body.append(createElement({ tag: componentName }));
+  const shadowElement = createElement({ tag: componentName });
+  document.body.append(shadowElement);
+  return {
+    trigger: () => shadowElement.trigger()
+  };
 };
 export {
   BubbleExplosion
