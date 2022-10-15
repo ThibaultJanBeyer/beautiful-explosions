@@ -8,8 +8,10 @@
   "author": "Thibault Jan Beyer <thibault.beyer@gmail.com>",
   "license": "GLP-3.0",
   "scripts": {
-    "build": "esbuild ./src/index.ts --outfile=docs/index.js --bundle --sourcemap --format=esm",
+    "build": "esbuild ./src/index.ts --outfile=docs/index.js --bundle --minify --sourcemap --format=esm",
+    "postbuild": "yarn ts",
     "build:watch": "yarn build --watch",
+    "ts": "tsc --emitDeclarationOnly --outDir docs",
     "lint": "eslint --ext .js,.ts ./src",
     "start": "http-server . --cors true -o /docs & yarn build:watch"
   },

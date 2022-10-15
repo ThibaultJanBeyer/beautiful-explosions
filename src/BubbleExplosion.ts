@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 export const BubbleExplosion = ({
   element,
@@ -55,7 +55,7 @@ export const BubbleExplosion = ({
       super()
       this.attachShadow({ mode: 'open' })
 
-      let css = /*CSS*/`
+      let css = /*CSS*/ `
         .element--explode {
           animation-duration: 200ms;
           animation-name: implode;
@@ -104,7 +104,7 @@ export const BubbleExplosion = ({
         const size = Math.min(element.offsetHeight, element.offsetWidth)
         const temp = 1 + random(0, size)
         const tempR = random(0, 360)
-        css += /*CSS*/`
+        css += /*CSS*/ `
           .bubble:nth-child(${index}) {
             width: ${temp}px;
             height: ${temp}px;
@@ -141,20 +141,19 @@ export const BubbleExplosion = ({
         appendElement: this.shadowRoot,
       })
 
-      if(eventListener)
-        element.addEventListener(eventListener, this.trigger)
+      if (eventListener) element.addEventListener(eventListener, this.trigger)
     }
 
     trigger = () => {
-        for (let j = 0; j < 30; j++) this.createBubble(element)
-        updateStyle(element, {
-          transition:
-            'opacity 200ms ease-in-out, transform 200ms ease-in-out, font-size 200ms ease-in-out',
-          transform: 'scale(0, 0) translate(50%, 50%)',
-          pointerEvents: 'none',
-        })
+      for (let j = 0; j < 30; j++) this.createBubble(element)
+      updateStyle(element, {
+        transition:
+          'opacity 200ms ease-in-out, transform 200ms ease-in-out, font-size 200ms ease-in-out',
+        transform: 'scale(0, 0) translate(50%, 50%)',
+        pointerEvents: 'none',
+      })
       setTimeout(() => (element.style.display = 'none'), 200)
-      if(eventListener)
+      if (eventListener)
         element.removeEventListener(eventListener, this.trigger)
     }
 
@@ -181,6 +180,6 @@ export const BubbleExplosion = ({
   document.body.append(shadowElement)
 
   return {
-    trigger: () => shadowElement.trigger()
+    trigger: () => shadowElement.trigger(),
   }
 }
