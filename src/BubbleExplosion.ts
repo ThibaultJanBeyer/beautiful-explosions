@@ -144,8 +144,7 @@ export const BubbleExplosion = ({
       if (eventListener) element.addEventListener(eventListener, this.trigger)
     }
 
-    trigger = () => {
-      for (let j = 0; j < 30; j++) this.createBubble(element)
+    trigger = async () => {
       updateStyle(element, {
         transition:
           'opacity 200ms ease-in-out, transform 200ms ease-in-out, font-size 200ms ease-in-out',
@@ -155,23 +154,40 @@ export const BubbleExplosion = ({
       setTimeout(() => (element.style.display = 'none'), 200)
       if (eventListener)
         element.removeEventListener(eventListener, this.trigger)
+
+      await Promise.all(
+        new Array(30).fill(true).map(() => this.createBubble(element))
+      )
     }
 
-    createBubble(targetEl: HTMLElement) {
-      const el = createElement({
-        tag: 'span',
-        classList: 'bubble',
-        style: {
-          top: targetEl.offsetTop + targetEl.offsetHeight / 2 + 'px',
-          left: targetEl.offsetLeft + targetEl.offsetWidth / 2 + 'px',
-          borderColor: this.colors[random(0, this.colors.length - 1)],
-        },
+    createBubble = (targetEl: HTMLElement) =>
+      new Promise((resolve) => {
+        let resolved = false
+        const el = createElement({
+          tag: 'span',
+          classList: 'bubble',
+          style: {
+            top: targetEl.offsetTop + targetEl.offsetHeight / 2 + 'px',
+            left: targetEl.offsetLeft + targetEl.offsetWidth / 2 + 'px',
+            borderColor: this.colors[random(0, this.colors.length - 1)],
+          },
+        })
+        const typeId = random(0, 1)
+        if (typeId === 0) el.classList.add('circle')
+        this.container.appendChild(el)
+
+        el.addEventListener('animationend', (e) => {
+          resolved = true
+          this.container.removeChild(el)
+          resolve(e)
+        })
+
+        setTimeout(() => {
+          if (resolved) return
+          this.container.removeChild(el)
+          resolve('ok')
+        }, 1000)
       })
-      const typeId = random(0, 1)
-      if (typeId === 0) el.classList.add('circle')
-      this.container.appendChild(el)
-      setTimeout(() => this.container.removeChild(el), 800)
-    }
   }
 
   const componentName = `ba-bubble-explosion-${uuidv4()}`
@@ -180,6 +196,6 @@ export const BubbleExplosion = ({
   document.body.append(shadowElement)
 
   return {
-    trigger: () => shadowElement.trigger(),
+    trigger: shadowElement.trigger,
   }
 }
