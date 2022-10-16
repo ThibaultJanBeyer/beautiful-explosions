@@ -148,7 +148,9 @@ export const BubbleExplosion = ({
       updateStyle(element, {
         transition:
           'opacity 200ms ease-in-out, transform 200ms ease-in-out, font-size 200ms ease-in-out',
-        transform: 'scale(0, 0) translate(50%, 50%)',
+        transform: `${
+          element.style.transform || ''
+        } scale(0, 0) translate(50%, 50%)`,
         pointerEvents: 'none',
       })
       setTimeout(() => (element.style.display = 'none'), 200)
