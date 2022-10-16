@@ -6,10 +6,14 @@ export const BubbleExplosion = ({
   element,
   eventListener = 'click',
   content,
+  particlesSize,
+  areaSize,
 }: {
   element: HTMLElement
   eventListener?: string
   content?: CSSStyleDeclaration['content']
+  particlesSize?: number
+  areaSize?: number
 }): { trigger: () => void } => {
   const duration = 800
   const elementLifeSpan = duration / 4
@@ -43,7 +47,8 @@ export const BubbleExplosion = ({
       `
 
       for (let index = 0; index < 25; index++) {
-        const size = Math.min(element.offsetHeight, element.offsetWidth)
+        const size =
+          particlesSize || Math.min(element.offsetHeight, element.offsetWidth)
         const temp = 1 + randomInt(0, size)
         const tempR = randomInt(0, 360)
         css += /*CSS*/ `
@@ -62,8 +67,14 @@ export const BubbleExplosion = ({
               transform:
                 rotate(${tempR}deg)
                 translate(
-                  ${randomInt(0, Math.max(element.offsetWidth, 50))}px,
-                  ${randomInt(0, Math.max(element.offsetWidth, 50))}px
+                  ${randomInt(
+                    0,
+                    areaSize || Math.max(element.offsetWidth, 50)
+                  )}px,
+                  ${randomInt(
+                    0,
+                    areaSize || Math.max(element.offsetWidth, 50)
+                  )}px
                 )
                 scale(1, 1);
               opacity: 0;
