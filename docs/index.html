@@ -12,10 +12,16 @@
   <div id="be" style="display: inline-block;">Click Me</div>
   <h2>Bubble Explosion With Custom Content</h2>
   <div id="bec" style="display: inline-block;">Click Me</div>
+  <h2>Bubble Explosion With Custom Content & Direction Up</h2>
+  <div id="becu" style="display: inline-block;">Click Me</div>
+  <h2>Bubble Explosion With Custom Content & Direction Down</h2>
+  <div id="becd" style="display: inline-block;">Click Me</div>
 </body>
 <script type="module">
   import { BubbleExplosion } from './index.js'
   BubbleExplosion({ element: document.querySelector('#be') })
   BubbleExplosion({ element: document.querySelector('#bec'), content: '✅' })
+  BubbleExplosion({ element: document.querySelector('#becu'), content: '🔥', particles: { direction: 'up' } })
+  BubbleExplosion({ element: document.querySelector('#becd'), content: '❌', particles: { direction: 'down' }, areaSize: { height: 100 } })
 </script>
 </html>

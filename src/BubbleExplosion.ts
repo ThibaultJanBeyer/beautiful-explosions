@@ -6,17 +6,18 @@ export const BubbleExplosion = ({
   element,
   eventListener = 'click',
   content,
-  particlesSize,
+  particles,
   areaSize,
 }: {
   element: HTMLElement
   eventListener?: string
   content?: CSSStyleDeclaration['content']
-  particlesSize?: number
-  areaSize?: number
+  particles: { size?: number; direction?: 'up' | 'down'; amount?: number }
+  areaSize?: { x?: number; y?: number }
 }): { trigger: () => void } => {
   const duration = 800
   const elementLifeSpan = duration / 4
+
   class BE extends HTMLElement {
     colors = ['#D81CB8', '#05A542', '#DE215F', '#1CD8CE', '#1B3F3D']
 
@@ -26,7 +27,10 @@ export const BubbleExplosion = ({
       super()
       this.attachShadow({ mode: 'open' })
 
-      let css = /*CSS*/ `
+      createElement({
+        tag: 'style',
+        appendElement: this.shadowRoot,
+        value: /*CSS*/ `
         .circle { border-radius: 50% }
 
         .bubble {
@@ -44,49 +48,7 @@ export const BubbleExplosion = ({
             `
             : ''
         }
-      `
-
-      for (let index = 0; index < 25; index++) {
-        const size =
-          particlesSize || Math.min(element.offsetHeight, element.offsetWidth)
-        const temp = 1 + randomInt(0, size)
-        const tempR = randomInt(0, 360)
-        css += /*CSS*/ `
-          .bubble:nth-child(${index}) {
-            width: ${temp}px;
-            height: ${temp}px;
-            font-size: ${temp}px;
-            animation-duration: ${duration - randomInt(0, 750)}ms;
-            animation-name: bMove--${index};
-            animation-delay: 100ms;
-          }
-          @keyframes bMove--${index} {
-            0% { transform: rotate(${tempR}deg) translate(0, 0) scale(0, 0); opacity: 1; }
-            50% { opacity: 0.7; }
-            100% {
-              transform:
-                rotate(${tempR}deg)
-                translate(
-                  ${randomInt(
-                    0,
-                    areaSize || Math.max(element.offsetWidth, 50)
-                  )}px,
-                  ${randomInt(
-                    0,
-                    areaSize || Math.max(element.offsetWidth, 50)
-                  )}px
-                )
-                scale(1, 1);
-              opacity: 0;
-            }
-          }
-        `
-      }
-
-      createElement({
-        tag: 'style',
-        appendElement: this.shadowRoot,
-        value: css,
+      `,
       })
 
       this.container = createElement({
@@ -97,7 +59,22 @@ export const BubbleExplosion = ({
       if (eventListener) element.addEventListener(eventListener, this.trigger)
     }
 
+    randomTranslateInt = (xy: 'x' | 'y', size: number, rect: DOMRect) =>
+      randomInt(
+        size / 2,
+        (areaSize && areaSize[xy]) || Math.max(rect.width, 50)
+      )
+
     trigger = async () => {
+      const rect = element.getBoundingClientRect()
+      const amount = particles?.amount || 25
+
+      createElement({
+        tag: 'style',
+        appendElement: this.shadowRoot,
+        value: this.getBubbleCss(amount, rect),
+      })
+
       updateStyle(element, {
         transition: `
           opacity ${elementLifeSpan}ms ease-in-out, 
@@ -112,14 +89,61 @@ export const BubbleExplosion = ({
         element.removeEventListener(eventListener, this.trigger)
 
       await Promise.all(
-        new Array(25).fill(true).map(() => this.createBubble(element))
+        new Array(amount).fill(null).map(() => this.spawnBubble(rect))
       )
     }
 
-    createBubble = (targetEl: HTMLElement) =>
+    getBubbleCss = (amount: number, rect: DOMRect): string => {
+      const size = particles?.size || Math.min(rect.height, rect.width)
+
+      let css = ''
+      for (let index = 0; index < amount; index++) {
+        const temp = randomInt(1, size)
+        let tempR = randomInt(0, 360)
+        let translateY = this.randomTranslateInt('y', size, rect)
+        let translateX = this.randomTranslateInt('x', size, rect)
+        let startTranslateY = 0
+        let startTranslateX = 0
+
+        if (particles?.direction === 'up' || particles?.direction === 'down') {
+          tempR = 0
+          translateX -= this.randomTranslateInt('x', size, rect)
+          startTranslateX = translateX
+          if (particles?.direction === 'up') translateY *= -1
+        }
+
+        css += /*CSS*/ `
+          .bubble:nth-child(${index}) {
+            width: ${temp}px;
+            height: ${temp}px;
+            font-size: ${temp}px;
+            animation-duration: ${duration - randomInt(0, 750)}ms;
+            animation-name: bMove--${index};
+            animation-delay: 100ms;
+          }
+
+          @keyframes bMove--${index} {
+            0% { transform: rotate(${tempR}deg) translate3d(${startTranslateX}px, ${startTranslateY}px, 0) scale(0, 0); opacity: 1; }
+            50% { opacity: 0.7; }
+            100% {
+              transform:
+                rotate(${tempR}deg)
+                translate3d(
+                  ${translateX}px,
+                  ${translateY}px,
+                  1px
+                )
+                scale(1, 1);
+              opacity: 0;
+            }
+          }
+        `
+      }
+      return css
+    }
+
+    spawnBubble = (rect: DOMRect) =>
       new Promise((resolve) => {
-        let resolved = false
-        const rect = targetEl.getBoundingClientRect()
         const el = createElement({
           tag: 'span',
           classList: 'bubble',
@@ -129,12 +153,10 @@ export const BubbleExplosion = ({
             borderColor: this.colors[randomInt(0, this.colors.length - 1)],
           },
         })
-        const typeId = randomInt(0, 1)
-        if (typeId === 0) el.classList.add('circle')
+        if (randomInt(0, 1) === 0) el.classList.add('circle')
         this.container.appendChild(el)
 
         setTimeout(() => {
-          if (resolved) return
           this.container.removeChild(el)
           resolve('ok')
         }, duration)
