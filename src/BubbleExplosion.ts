@@ -148,9 +148,8 @@ export const BubbleExplosion = ({
       updateStyle(element, {
         transition:
           'opacity 200ms ease-in-out, transform 200ms ease-in-out, font-size 200ms ease-in-out',
-        transform: `${
-          element.style.transform || ''
-        } scale(0, 0) translate(50%, 50%)`,
+        transform: `${element.style.transform || ''} scale(0, 0)`,
+        transformOrigin: 'center',
         pointerEvents: 'none',
       })
       setTimeout(() => (element.style.display = 'none'), 200)
@@ -195,7 +194,8 @@ export const BubbleExplosion = ({
   const componentName = `ba-bubble-explosion-${uuidv4()}`
   customElements.define(componentName, BE)
   const shadowElement = createElement({ tag: componentName }) as BE
-  document.body.append(shadowElement)
+  const parent = element.parentElement || document.body
+  parent.append(shadowElement)
 
   return {
     trigger: shadowElement.trigger,
