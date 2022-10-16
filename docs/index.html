@@ -12,16 +12,18 @@
   <div id="be" style="display: inline-block;">Click Me</div>
   <h2>Bubble Explosion With Custom Content</h2>
   <div id="bec" style="display: inline-block;">Click Me</div>
-  <h2>Bubble Explosion With Custom Content & Direction Up</h2>
-  <div id="becu" style="display: inline-block;">Click Me</div>
   <h2>Bubble Explosion With Custom Content & Direction Down</h2>
   <div id="becd" style="display: inline-block;">Click Me</div>
+  <h2>Bubble Appearance Direction Up</h2>
+  <div id="becu_trigger" style="display: inline-block;">Click Me</div>
+  <div id="becu" style="display: inline-block;">I’m here!</div>
 </body>
 <script type="module">
   import { BubbleExplosion } from './index.js'
   BubbleExplosion({ element: document.querySelector('#be') })
   BubbleExplosion({ element: document.querySelector('#bec'), content: '✅' })
-  BubbleExplosion({ element: document.querySelector('#becu'), content: '🔥', particles: { direction: 'up' } })
   BubbleExplosion({ element: document.querySelector('#becd'), content: '❌', particles: { direction: 'down' }, areaSize: { height: 100 } })
+  const appear = BubbleExplosion({ element: document.querySelector('#becu'), content: '🔥', particles: { direction: 'up' }, shouldAppear: true, eventListener: null })
+  document.querySelector('#becu_trigger').addEventListener('click', appear.trigger)
 </script>
 </html>

@@ -21,7 +21,8 @@ const BE = BubbleExplosion({
   areaSize: { // optional, area size of the explosion
     x: 100, // optional, width of the explosion
     y: 100, // optional, height of the explosion
-  }
+  },
+  shouldAppear: false, // optional, if true, it reverses the animation (appears instead of disappearing)
 })
 
 BE.trigger() // if no event listener is how you can trigger the animation programmatically

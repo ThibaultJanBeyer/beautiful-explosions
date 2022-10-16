@@ -8,12 +8,14 @@ export const BubbleExplosion = ({
   content,
   particles,
   areaSize,
+  shouldAppear,
 }: {
   element: HTMLElement
   eventListener?: string
   content?: CSSStyleDeclaration['content']
   particles: { size?: number; direction?: 'up' | 'down'; amount?: number }
   areaSize?: { x?: number; y?: number }
+  shouldAppear?: boolean
 }): { trigger: () => void } => {
   const duration = 800
   const elementLifeSpan = duration / 4
@@ -51,6 +53,37 @@ export const BubbleExplosion = ({
       `,
       })
 
+      if (shouldAppear)
+        updateStyle(element, {
+          transform: `${element.style.transform || ''} scale(1, 0)`,
+          opacity: '0',
+          transformOrigin:
+            particles?.direction === 'up'
+              ? 'bottom'
+              : particles?.direction === 'down'
+              ? 'top'
+              : 'middle',
+          transition: `
+          ${element.style.transition ? `${element.style.transition},` : ''}
+          opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
+          transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
+          font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`,
+        })
+      else
+        updateStyle(element, {
+          transition: `
+          ${element.style.transition ? `${element.style.transition},` : ''}
+          opacity ${elementLifeSpan}ms ease-in-out, 
+          transform ${elementLifeSpan}ms ease-in-out,
+          font-size ${elementLifeSpan}ms ease-in-out`,
+          transformOrigin:
+            particles?.direction === 'up'
+              ? 'top'
+              : particles?.direction === 'down'
+              ? 'bottom'
+              : 'middle',
+        })
+
       this.container = createElement({
         tag: 'div',
         appendElement: this.shadowRoot,
@@ -75,16 +108,20 @@ export const BubbleExplosion = ({
         value: this.getBubbleCss(amount, rect),
       })
 
-      updateStyle(element, {
-        transition: `
-          opacity ${elementLifeSpan}ms ease-in-out, 
-          transform ${elementLifeSpan}ms ease-in-out,
-          font-size ${elementLifeSpan}ms ease-in-out`,
-        transform: `${element.style.transform || ''} scale(0, 0)`,
-        transformOrigin: 'center',
-        pointerEvents: 'none',
-      })
-      setTimeout(() => (element.style.display = 'none'), elementLifeSpan)
+      if (shouldAppear)
+        updateStyle(element, {
+          transform: element.style.transform.replace(
+            'scale(1, 0)',
+            'scale(1, 1)'
+          ),
+          opacity: '1',
+        })
+      else
+        updateStyle(element, {
+          transform: `${element.style.transform} scale(0, 0)`,
+          pointerEvents: 'none',
+        })
+
       if (eventListener)
         element.removeEventListener(eventListener, this.trigger)
 
@@ -94,7 +131,10 @@ export const BubbleExplosion = ({
     }
 
     getBubbleCss = (amount: number, rect: DOMRect): string => {
-      const size = particles?.size || Math.min(rect.height, rect.width)
+      const size =
+        particles?.size || Math.max(Math.min(rect.height, rect.width), 25)
+
+      console.log(size)
 
       let css = ''
       for (let index = 0; index < amount; index++) {
