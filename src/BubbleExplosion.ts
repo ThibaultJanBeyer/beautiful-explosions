@@ -164,12 +164,13 @@ export const BubbleExplosion = ({
     createBubble = (targetEl: HTMLElement) =>
       new Promise((resolve) => {
         let resolved = false
+        const rect = targetEl.getBoundingClientRect()
         const el = createElement({
           tag: 'span',
           classList: 'bubble',
           style: {
-            top: targetEl.offsetTop + targetEl.offsetHeight / 2 + 'px',
-            left: targetEl.offsetLeft + targetEl.offsetWidth / 2 + 'px',
+            top: rect.top + rect.height / 2 + 'px',
+            left: rect.left + rect.width / 2 + 'px',
             borderColor: this.colors[random(0, this.colors.length - 1)],
           },
         })
@@ -194,8 +195,7 @@ export const BubbleExplosion = ({
   const componentName = `ba-bubble-explosion-${uuidv4()}`
   customElements.define(componentName, BE)
   const shadowElement = createElement({ tag: componentName }) as BE
-  const parent = element.parentElement || document.body
-  parent.append(shadowElement)
+  document.body.append(shadowElement)
 
   return {
     trigger: shadowElement.trigger,
