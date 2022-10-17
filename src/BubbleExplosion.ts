@@ -11,7 +11,7 @@ export const BubbleExplosion = ({
   isAppearing,
 }: {
   element: HTMLElement
-  eventListener?: string
+  eventListener?: string | null
   content?: CSSStyleDeclaration['content']
   particles: { size?: number; direction?: 'up' | 'down'; amount?: number }
   areaSize?: { x?: number; y?: number }

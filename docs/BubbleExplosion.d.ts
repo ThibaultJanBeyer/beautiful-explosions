@@ -1,6 +1,6 @@
 export declare const BubbleExplosion: ({ element, eventListener, content, particles, areaSize, isAppearing, }: {
     element: HTMLElement;
-    eventListener?: string | undefined;
+    eventListener?: string | null | undefined;
     content?: string | undefined;
     particles: {
         size?: number;
