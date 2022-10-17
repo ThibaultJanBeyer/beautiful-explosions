@@ -105,41 +105,48 @@ export const BubbleExplosion = ({
         (areaSize && areaSize[xy]) || Math.max(rect.width, 50)
       )
 
-    trigger = async () => {
-      const rect = element.getBoundingClientRect()
-      const amount = particles?.amount || 25
+    trigger = async () =>
+      new Promise((resolve) => {
+        const call = async () => {
+          const rect = element.getBoundingClientRect()
+          const amount = particles?.amount || 25
 
-      if (!this.shadowRoot) return
+          if (!this.shadowRoot) return
 
-      await preloadContent(this.shadowRoot, content)
+          await preloadContent(this.shadowRoot, content)
 
-      createElement({
-        tag: 'style',
-        appendElement: this.shadowRoot,
-        value: this.getBubbleCss(amount, rect),
+          createElement({
+            tag: 'style',
+            appendElement: this.shadowRoot,
+            value: this.getBubbleCss(amount, rect),
+          })
+
+          if (isAppearing)
+            updateStyle(element, {
+              transform: element.style.transform.replace(
+                'scale(1, 0)',
+                'scale(1, 1)'
+              ),
+              opacity: '1',
+            })
+          else
+            updateStyle(element, {
+              transform: `${element.style.transform} scale(0, 0)`,
+              pointerEvents: 'none',
+            })
+
+          if (eventListener)
+            element.removeEventListener(eventListener, this.trigger)
+
+          await Promise.all(
+            new Array(amount).fill(null).map(() => this.spawnBubble(rect))
+          )
+
+          resolve('ok')
+        }
+        // put on bottom call-stack
+        setTimeout(call)
       })
-
-      if (isAppearing)
-        updateStyle(element, {
-          transform: element.style.transform.replace(
-            'scale(1, 0)',
-            'scale(1, 1)'
-          ),
-          opacity: '1',
-        })
-      else
-        updateStyle(element, {
-          transform: `${element.style.transform} scale(0, 0)`,
-          pointerEvents: 'none',
-        })
-
-      if (eventListener)
-        element.removeEventListener(eventListener, this.trigger)
-
-      await Promise.all(
-        new Array(amount).fill(null).map(() => this.spawnBubble(rect))
-      )
-    }
 
     getBubbleCss = (amount: number, rect: DOMRect): string => {
       const size =
@@ -157,7 +164,14 @@ export const BubbleExplosion = ({
           tempR = 0
           translateX -= this.randomTranslateInt('x', size, rect)
           startTranslateX = translateX
-          if (particles?.direction === 'up') translateY *= -1
+          if (particles?.direction === 'up') {
+            translateY = this.randomTranslateInt('y', 0, rect)
+            translateY *= -1
+          }
+          if (particles?.direction === 'down') {
+            translateY = this.randomTranslateInt('y', size * 2, rect)
+            translateY *= -1
+          }
         }
 
         css += /*CSS*/ `

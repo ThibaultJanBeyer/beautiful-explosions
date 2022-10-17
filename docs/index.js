@@ -76,7 +76,7 @@ var createElement = ({
     );
   return el;
 };
-var preloadContent = (root, content) => new Promise((resolve, reject) => {
+var preloadContent = (root, content) => new Promise((resolve) => {
   if (!content || !content.includes("url"))
     return resolve("ok");
   const url = content.replaceAll("url(", "").replaceAll(")", "").replaceAll("'", "").replaceAll('"', "");
@@ -95,16 +95,19 @@ var preloadContent = (root, content) => new Promise((resolve, reject) => {
       src: url || ""
     }
   });
-  if (preload.complete)
+  if (preload.complete) {
+    console.info("[BWA] already loaded");
     return resolve("ok");
+  }
   preload.addEventListener("load", () => {
+    console.info("[BWA] pre-loaded");
     root.removeChild(preload);
     resolve("ok");
   });
   preload.addEventListener("error", () => {
+    console.info("[BWA] could not pre-load");
     root.removeChild(preload);
     resolve("notOk");
-    console.info("[BWA] could not pre-load");
   });
 });
 
@@ -180,36 +183,40 @@ var BubbleExplosion = ({
       size / 2,
       areaSize && areaSize[xy] || Math.max(rect.width, 50)
     );
-    trigger = async () => {
-      const rect = element.getBoundingClientRect();
-      const amount = particles?.amount || 25;
-      if (!this.shadowRoot)
-        return;
-      await preloadContent(this.shadowRoot, content);
-      createElement({
-        tag: "style",
-        appendElement: this.shadowRoot,
-        value: this.getBubbleCss(amount, rect)
-      });
-      if (isAppearing)
-        updateStyle(element, {
-          transform: element.style.transform.replace(
-            "scale(1, 0)",
-            "scale(1, 1)"
-          ),
-          opacity: "1"
+    trigger = async () => new Promise((resolve) => {
+      const call = async () => {
+        const rect = element.getBoundingClientRect();
+        const amount = particles?.amount || 25;
+        if (!this.shadowRoot)
+          return;
+        await preloadContent(this.shadowRoot, content);
+        createElement({
+          tag: "style",
+          appendElement: this.shadowRoot,
+          value: this.getBubbleCss(amount, rect)
         });
-      else
-        updateStyle(element, {
-          transform: `${element.style.transform} scale(0, 0)`,
-          pointerEvents: "none"
-        });
-      if (eventListener)
-        element.removeEventListener(eventListener, this.trigger);
-      await Promise.all(
-        new Array(amount).fill(null).map(() => this.spawnBubble(rect))
-      );
-    };
+        if (isAppearing)
+          updateStyle(element, {
+            transform: element.style.transform.replace(
+              "scale(1, 0)",
+              "scale(1, 1)"
+            ),
+            opacity: "1"
+          });
+        else
+          updateStyle(element, {
+            transform: `${element.style.transform} scale(0, 0)`,
+            pointerEvents: "none"
+          });
+        if (eventListener)
+          element.removeEventListener(eventListener, this.trigger);
+        await Promise.all(
+          new Array(amount).fill(null).map(() => this.spawnBubble(rect))
+        );
+        resolve("ok");
+      };
+      setTimeout(call);
+    });
     getBubbleCss = (amount, rect) => {
       const size = particles?.size || Math.max(Math.min(rect.height, rect.width), 25);
       let css = "";
@@ -224,8 +231,14 @@ var BubbleExplosion = ({
           tempR = 0;
           translateX -= this.randomTranslateInt("x", size, rect);
           startTranslateX = translateX;
-          if (particles?.direction === "up")
+          if (particles?.direction === "up") {
+            translateY = this.randomTranslateInt("y", 0, rect);
             translateY *= -1;
+          }
+          if (particles?.direction === "down") {
+            translateY = this.randomTranslateInt("y", size * 2, rect);
+            translateY *= -1;
+          }
         }
         css += `
           .bubble:nth-child(${index}) {

@@ -38,7 +38,7 @@ export const createElement = ({
 }
 
 export const preloadContent = (root: ShadowRoot, content?: string) =>
-  new Promise((resolve, reject) => {
+  new Promise((resolve) => {
     // pre-load content
     if (!content || !content.includes('url')) return resolve('ok')
 
@@ -64,15 +64,19 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
       },
     }) as HTMLImageElement
 
-    if (preload.complete) return resolve('ok')
+    if (preload.complete) {
+      console.info('[BWA] already loaded')
+      return resolve('ok')
+    }
 
     preload.addEventListener('load', () => {
+      console.info('[BWA] pre-loaded')
       root.removeChild(preload)
       resolve('ok')
     })
     preload.addEventListener('error', () => {
+      console.info('[BWA] could not pre-load')
       root.removeChild(preload)
       resolve('notOk')
-      console.info('[BWA] could not pre-load')
     })
   })
