@@ -9,7 +9,7 @@
   "author": "Thibault Jan Beyer <thibault.beyer@gmail.com>",
   "license": "GLP-3.0",
   "scripts": {
-    "build": "esbuild ./src/index.ts --outfile=docs/index.js --bundle --define:DEBUG=false --minify --sourcemap --format=esm",
+    "build": "esbuild ./src/index.ts --outfile=docs/index.js --bundle --define:DEBUG=false --sourcemap --format=esm",
     "postbuild": "yarn ts",
     "build:watch": "yarn build --watch --define:DEBUG=true",
     "ts": "tsc --emitDeclarationOnly --outDir docs",
