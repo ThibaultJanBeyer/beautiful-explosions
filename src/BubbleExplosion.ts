@@ -35,8 +35,6 @@ export const BubbleExplosion = ({
       super()
       this.attachShadow({ mode: 'open' })
 
-      console.info('[BWA] content B ', content)
-
       createElement({
         tag: 'style',
         appendElement: this.shadowRoot,
@@ -164,7 +162,7 @@ export const BubbleExplosion = ({
 
         if (particles?.direction === 'up' || particles?.direction === 'down') {
           tempR = 0
-          translateX -= this.randomTranslateInt('x', size, rect)
+          if (index < amount / 2) translateX *= -1 // spread evenly
           startTranslateX = translateX
           if (particles?.direction === 'up') {
             translateY = this.randomTranslateInt('y', 0, rect)

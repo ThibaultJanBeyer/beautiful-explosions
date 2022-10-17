@@ -80,7 +80,6 @@ var preloadContent = (root, content) => new Promise((resolve) => {
   if (!content || !content.includes("url"))
     return resolve("ok");
   const url = content[4] === '"' || content[4] === "'" ? content.slice(5, content.length - 2) : content.slice(4, content.length - 1);
-  console.info("[BWA] content B ", content, url);
   const preload = createElement({
     tag: "img",
     appendElement: root,
@@ -93,11 +92,11 @@ var preloadContent = (root, content) => new Promise((resolve) => {
     }
   });
   preload.addEventListener("load", () => {
-    console.info("[BWA] pre-loaded");
+    root.removeChild(preload);
     resolve("ok");
   });
   preload.addEventListener("error", () => {
-    console.info("[BWA] could not pre-load");
+    root.removeChild(preload);
     resolve("notOk");
   });
 });
@@ -123,7 +122,6 @@ var BubbleExplosion = ({
     constructor() {
       super();
       this.attachShadow({ mode: "open" });
-      console.info("[BWA] content B ", content);
       createElement({
         tag: "style",
         appendElement: this.shadowRoot,
@@ -221,7 +219,8 @@ var BubbleExplosion = ({
         let startTranslateX = 0;
         if (particles?.direction === "up" || particles?.direction === "down") {
           tempR = 0;
-          translateX -= this.randomTranslateInt("x", size, rect);
+          if (index < amount / 2)
+            translateX *= -1;
           startTranslateX = translateX;
           if (particles?.direction === "up") {
             translateY = this.randomTranslateInt("y", 0, rect);

@@ -48,8 +48,6 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
         ? content.slice(5, content.length - 2)
         : content.slice(4, content.length - 1)
 
-    console.info('[BWA] content B ', content, url)
-
     const preload = createElement({
       tag: 'img',
       appendElement: root,
@@ -67,13 +65,11 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
     }) as HTMLImageElement
 
     preload.addEventListener('load', () => {
-      console.info('[BWA] pre-loaded')
-      // root.removeChild(preload)
+      root.removeChild(preload)
       resolve('ok')
     })
     preload.addEventListener('error', () => {
-      console.info('[BWA] could not pre-load')
-      // root.removeChild(preload)
+      root.removeChild(preload)
       resolve('notOk')
     })
   })
