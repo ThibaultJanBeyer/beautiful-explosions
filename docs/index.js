@@ -10,7 +10,7 @@ var f,D=new Uint8Array(16);function h(){if(!f&&(f=typeof crypto<"u"&&crypto.getR
 
         ${r?`
               .bubble { border: 0 }
-              .bubble::before { content: '${r}' }
+              .bubble::before { content: ${r} }
             `:""}
       `}),d?u(t,{transform:`${t.style.transform||""} scale(1, 0)`,opacity:"0",transformOrigin:n?.direction==="up"?"bottom":n?.direction==="down"?"top":"middle",transition:`
           ${t.style.transition?`${t.style.transition},`:""}

@@ -46,7 +46,7 @@ export const BubbleExplosion = ({
           content
             ? /*CSS*/ `
               .bubble { border: 0 }
-              .bubble::before { content: '${content}' }
+              .bubble::before { content: ${content} }
             `
             : ''
         }
