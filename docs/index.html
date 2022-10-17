@@ -24,7 +24,7 @@
   import { BubbleExplosion } from './index.js'
   BubbleExplosion({ element: document.querySelector('#be'), eventListener: 'click' })
   BubbleExplosion({ element: document.querySelector('#bec'), content: '"✅"', eventListener: 'click' })
-  BubbleExplosion({ element: document.querySelector('#beci'), content: 'url(https://cataas.com/cat)', eventListener: 'click' })
+  BubbleExplosion({ element: document.querySelector('#beci'), content: 'url(https://cataas.com/cat)', eventListener: 'click', particles: { size: 50 } })
   BubbleExplosion({ element: document.querySelector('#becd'), content: '"❌"', particles: { direction: 'down' }, areaSize: { height: 100 }, eventListener: 'click' })
   const appear = BubbleExplosion({ element: document.querySelector('#becu'), content: '"🔥"', particles: { direction: 'up' }, isAppearing: true })
   document.querySelector('#becu_trigger').addEventListener('click', appear.trigger)

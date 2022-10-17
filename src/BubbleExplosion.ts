@@ -67,8 +67,8 @@ export const BubbleExplosion = ({
         ${
           content
             ? /*CSS*/ `
-              .bubble { border: 0 }
-              .bubble::before { content: ${content} }
+              .bubble { border: 0;  content: ${content} }
+              .bubble::after { content: ${content} }
               .preload { content: ${content} }
             `
             : ''
@@ -186,7 +186,7 @@ export const BubbleExplosion = ({
             translateY *= -1
           }
           if (particles?.direction === 'down') {
-            translateY = this.randomTranslateInt('y', size * 2, rect)
+            translateY = this.randomTranslateInt('y', size * -1, rect)
           }
         }
 

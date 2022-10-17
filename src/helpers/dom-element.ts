@@ -54,10 +54,10 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
       classList: 'preload',
       style: {
         position: 'fixed',
-        // top: '-10000px',
-        // width: '1px',
-        // height: '1px',
-        // pointerEvents: 'none',
+        top: '-10000px',
+        width: '1px',
+        height: '1px',
+        pointerEvents: 'none',
       },
       extraArrtibutes: {
         src: url || '',

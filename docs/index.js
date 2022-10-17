@@ -85,7 +85,11 @@ var preloadContent = (root, content) => new Promise((resolve) => {
     appendElement: root,
     classList: "preload",
     style: {
-      position: "fixed"
+      position: "fixed",
+      top: "-10000px",
+      width: "1px",
+      height: "1px",
+      pointerEvents: "none"
     },
     extraArrtibutes: {
       src: url || ""
@@ -146,8 +150,8 @@ var BubbleExplosion = ({
         }
 
         ${content ? `
-              .bubble { border: 0 }
-              .bubble::before { content: ${content} }
+              .bubble { border: 0;  content: ${content} }
+              .bubble::after { content: ${content} }
               .preload { content: ${content} }
             ` : ""}
       `
@@ -238,7 +242,7 @@ var BubbleExplosion = ({
             translateY *= -1;
           }
           if (particles?.direction === "down") {
-            translateY = this.randomTranslateInt("y", size * 2, rect);
+            translateY = this.randomTranslateInt("y", size * -1, rect);
           }
         }
         css += `
