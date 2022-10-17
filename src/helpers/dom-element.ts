@@ -42,11 +42,13 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
     // pre-load content
     if (!content || !content.includes('url')) return resolve('ok')
 
-    const url = content
-      .replaceAll('url(', '')
-      .replaceAll(')', '')
-      .replaceAll("'", '')
-      .replaceAll('"', '')
+    // url(abc) => abc || url("abc") => abc || url('abc') => abc
+    const url =
+      content[4] === '"' || content[4] === "'"
+        ? content.slice(5, content.length - 2)
+        : content.slice(4, content.length - 1)
+
+    console.info('[BWA] content B ', content, url)
 
     const preload = createElement({
       tag: 'img',

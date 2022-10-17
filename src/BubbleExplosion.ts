@@ -35,6 +35,8 @@ export const BubbleExplosion = ({
       super()
       this.attachShadow({ mode: 'open' })
 
+      console.info('[BWA] content B ', content)
+
       createElement({
         tag: 'style',
         appendElement: this.shadowRoot,
