@@ -1,4 +1,4 @@
-export declare const BubbleExplosion: ({ element, eventListener, content, particles, areaSize, shouldAppear, }: {
+export declare const BubbleExplosion: ({ element, eventListener, content, particles, areaSize, isAppearing, }: {
     element: HTMLElement;
     eventListener?: string | undefined;
     content?: string | undefined;
@@ -11,7 +11,7 @@ export declare const BubbleExplosion: ({ element, eventListener, content, partic
         x?: number | undefined;
         y?: number | undefined;
     } | undefined;
-    shouldAppear?: boolean | undefined;
+    isAppearing?: boolean | undefined;
 }) => {
     trigger: () => void;
 };

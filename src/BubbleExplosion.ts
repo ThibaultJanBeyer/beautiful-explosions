@@ -8,14 +8,14 @@ export const BubbleExplosion = ({
   content,
   particles,
   areaSize,
-  shouldAppear,
+  isAppearing,
 }: {
   element: HTMLElement
   eventListener?: string
   content?: CSSStyleDeclaration['content']
   particles: { size?: number; direction?: 'up' | 'down'; amount?: number }
   areaSize?: { x?: number; y?: number }
-  shouldAppear?: boolean
+  isAppearing?: boolean
 }): { trigger: () => void } => {
   const duration = 800
   const elementLifeSpan = duration / 4
@@ -53,7 +53,7 @@ export const BubbleExplosion = ({
       `,
       })
 
-      if (shouldAppear)
+      if (isAppearing)
         updateStyle(element, {
           transform: `${element.style.transform || ''} scale(1, 0)`,
           opacity: '0',
@@ -108,7 +108,7 @@ export const BubbleExplosion = ({
         value: this.getBubbleCss(amount, rect),
       })
 
-      if (shouldAppear)
+      if (isAppearing)
         updateStyle(element, {
           transform: element.style.transform.replace(
             'scale(1, 0)',
