@@ -103,7 +103,8 @@ var preloadContent = (root, content) => new Promise((resolve, reject) => {
   });
   preload.addEventListener("error", () => {
     root.removeChild(preload);
-    reject("notOk");
+    resolve("notOk");
+    console.info("[BWA] could not pre-load");
   });
 });
 

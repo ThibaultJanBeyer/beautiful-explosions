@@ -72,6 +72,7 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
     })
     preload.addEventListener('error', () => {
       root.removeChild(preload)
-      reject('notOk')
+      resolve('notOk')
+      console.info('[BWA] could not pre-load')
     })
   })
