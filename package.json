@@ -1,6 +1,6 @@
 {
   "name": "beautiful-web-animations",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Yet another library for beautiful pre-made animations for the web in vanilla js with shadow dom",
   "main": "./docs/index.js",
   "type": "module",
