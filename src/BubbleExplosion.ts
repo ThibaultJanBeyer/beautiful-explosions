@@ -1,5 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
-import { updateStyle, createElement } from './helpers/dom-element'
+import {
+  updateStyle,
+  createElement,
+  preloadContent,
+} from './helpers/dom-element'
 import { randomInt } from './helpers/random'
 
 export const BubbleExplosion = ({
@@ -22,6 +26,8 @@ export const BubbleExplosion = ({
 
   class BE extends HTMLElement {
     colors = ['#D81CB8', '#05A542', '#DE215F', '#1CD8CE', '#1B3F3D']
+
+    isPreloading = false
 
     container: HTMLElement
 
@@ -47,6 +53,7 @@ export const BubbleExplosion = ({
             ? /*CSS*/ `
               .bubble { border: 0 }
               .bubble::before { content: ${content} }
+              .preload { content: ${content} }
             `
             : ''
         }
@@ -101,6 +108,10 @@ export const BubbleExplosion = ({
     trigger = async () => {
       const rect = element.getBoundingClientRect()
       const amount = particles?.amount || 25
+
+      if (!this.shadowRoot) return
+
+      await preloadContent(this.shadowRoot, content)
 
       createElement({
         tag: 'style',

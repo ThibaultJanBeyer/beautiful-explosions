@@ -60,7 +60,8 @@ var createElement = ({
   classList = "",
   value = "",
   appendElement,
-  style
+  style,
+  extraArrtibutes
 }) => {
   const el = document.createElement(tag);
   el.className = classList;
@@ -69,8 +70,42 @@ var createElement = ({
     updateStyle(el, style);
   if (appendElement != null)
     appendElement.append(el);
+  if (extraArrtibutes)
+    Object.entries(extraArrtibutes).forEach(
+      ([key, val]) => el.setAttribute(key, val)
+    );
   return el;
 };
+var preloadContent = (root, content) => new Promise((resolve, reject) => {
+  if (!content || !content.includes("url"))
+    return resolve("ok");
+  const url = content.replaceAll("url(", "").replaceAll(")", "").replaceAll("'", "").replaceAll('"', "");
+  const preload = createElement({
+    tag: "img",
+    appendElement: root,
+    classList: "preload",
+    style: {
+      position: "fixed",
+      top: "-10000px",
+      width: "1px",
+      height: "1px",
+      pointerEvents: "none"
+    },
+    extraArrtibutes: {
+      src: url || ""
+    }
+  });
+  if (preload.complete)
+    return resolve("ok");
+  preload.addEventListener("load", () => {
+    root.removeChild(preload);
+    resolve("ok");
+  });
+  preload.addEventListener("error", () => {
+    root.removeChild(preload);
+    reject("notOk");
+  });
+});
 
 // src/helpers/random.ts
 var randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -88,6 +123,7 @@ var BubbleExplosion = ({
   const elementLifeSpan = duration / 4;
   class BE extends HTMLElement {
     colors = ["#D81CB8", "#05A542", "#DE215F", "#1CD8CE", "#1B3F3D"];
+    isPreloading = false;
     container;
     constructor() {
       super();
@@ -108,6 +144,7 @@ var BubbleExplosion = ({
         ${content ? `
               .bubble { border: 0 }
               .bubble::before { content: ${content} }
+              .preload { content: ${content} }
             ` : ""}
       `
       });
@@ -145,6 +182,9 @@ var BubbleExplosion = ({
     trigger = async () => {
       const rect = element.getBoundingClientRect();
       const amount = particles?.amount || 25;
+      if (!this.shadowRoot)
+        return;
+      await preloadContent(this.shadowRoot, content);
       createElement({
         tag: "style",
         appendElement: this.shadowRoot,

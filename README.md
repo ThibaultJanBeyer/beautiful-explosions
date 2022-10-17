@@ -33,3 +33,11 @@ See examples section:
 - [with custom content](https://thibaultjanbeyer.github.io/beautiful-web-animations/#bec)
 
 ![Bubble Explosion](./bubble-explosions.gif)
+
+### Preload included!
+
+You can also use URLs in your content props. Those will be preloaded before triggering the animation in order to always see the image!
+
+```CSS
+content: "url(https://cataas.com/cat)"
+```
