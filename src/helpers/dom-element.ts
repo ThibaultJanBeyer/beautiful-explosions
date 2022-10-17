@@ -64,11 +64,6 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
       },
     }) as HTMLImageElement
 
-    if (preload.complete) {
-      console.info('[BWA] already loaded')
-      return resolve('ok')
-    }
-
     preload.addEventListener('load', () => {
       console.info('[BWA] pre-loaded')
       root.removeChild(preload)
