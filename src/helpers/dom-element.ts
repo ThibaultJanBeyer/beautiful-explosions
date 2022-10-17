@@ -54,10 +54,10 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
       classList: 'preload',
       style: {
         position: 'fixed',
-        top: '-10000px',
-        width: '1px',
-        height: '1px',
-        pointerEvents: 'none',
+        // top: '-10000px',
+        // width: '1px',
+        // height: '1px',
+        // pointerEvents: 'none',
       },
       extraArrtibutes: {
         src: url || '',
@@ -66,12 +66,12 @@ export const preloadContent = (root: ShadowRoot, content?: string) =>
 
     preload.addEventListener('load', () => {
       console.info('[BWA] pre-loaded')
-      root.removeChild(preload)
+      // root.removeChild(preload)
       resolve('ok')
     })
     preload.addEventListener('error', () => {
       console.info('[BWA] could not pre-load')
-      root.removeChild(preload)
+      // root.removeChild(preload)
       resolve('notOk')
     })
   })

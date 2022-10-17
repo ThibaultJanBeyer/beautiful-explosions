@@ -85,11 +85,7 @@ var preloadContent = (root, content) => new Promise((resolve) => {
     appendElement: root,
     classList: "preload",
     style: {
-      position: "fixed",
-      top: "-10000px",
-      width: "1px",
-      height: "1px",
-      pointerEvents: "none"
+      position: "fixed"
     },
     extraArrtibutes: {
       src: url || ""
@@ -97,12 +93,10 @@ var preloadContent = (root, content) => new Promise((resolve) => {
   });
   preload.addEventListener("load", () => {
     console.info("[BWA] pre-loaded");
-    root.removeChild(preload);
     resolve("ok");
   });
   preload.addEventListener("error", () => {
     console.info("[BWA] could not pre-load");
-    root.removeChild(preload);
     resolve("notOk");
   });
 });
