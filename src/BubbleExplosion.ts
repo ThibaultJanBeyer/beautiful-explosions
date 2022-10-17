@@ -133,9 +133,6 @@ export const BubbleExplosion = ({
     getBubbleCss = (amount: number, rect: DOMRect): string => {
       const size =
         particles?.size || Math.max(Math.min(rect.height, rect.width), 25)
-
-      console.log(size)
-
       let css = ''
       for (let index = 0; index < amount; index++) {
         const temp = randomInt(1, size)
