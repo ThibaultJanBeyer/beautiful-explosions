@@ -119,9 +119,19 @@ var BubbleExplosion = ({
     colors = ["#D81CB8", "#05A542", "#DE215F", "#1CD8CE", "#1B3F3D"];
     isPreloading = false;
     container;
+    prevTransition;
+    prevTranform;
+    prevOpacity;
+    prevTransformOrigin;
+    prevPointerEvents;
     constructor() {
       super();
       this.attachShadow({ mode: "open" });
+      this.prevTransition = element.style.transition;
+      this.prevTranform = element.style.transform;
+      this.prevOpacity = element.style.opacity;
+      this.prevTransformOrigin = element.style.transformOrigin;
+      this.prevPointerEvents = element.style.pointerEvents;
       createElement({
         tag: "style",
         appendElement: this.shadowRoot,
@@ -148,7 +158,7 @@ var BubbleExplosion = ({
           opacity: "0",
           transformOrigin: particles?.direction === "up" ? "bottom" : particles?.direction === "down" ? "top" : "middle",
           transition: `
-          ${element.style.transition ? `${element.style.transition},` : ""}
+          ${this.prevTransition ? `${this.prevTransition},` : ""}
           opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
           transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
           font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`
@@ -156,7 +166,7 @@ var BubbleExplosion = ({
       else
         updateStyle(element, {
           transition: `
-          ${element.style.transition ? `${element.style.transition},` : ""}
+          ${this.prevTransition ? `${this.prevTransition},` : ""}
           opacity ${elementLifeSpan}ms ease-in-out, 
           transform ${elementLifeSpan}ms ease-in-out,
           font-size ${elementLifeSpan}ms ease-in-out`,
@@ -203,7 +213,8 @@ var BubbleExplosion = ({
         await Promise.all(
           new Array(amount).fill(null).map(() => this.spawnBubble(rect))
         );
-        resolve("ok");
+        this.cleanUp();
+        resolve("done");
       };
       setTimeout(call);
     });
@@ -278,6 +289,16 @@ var BubbleExplosion = ({
         resolve("ok");
       }, duration);
     });
+    cleanUp = () => {
+      if (isAppearing)
+        updateStyle(element, {
+          transform: this.prevTranform,
+          opacity: this.prevOpacity,
+          transformOrigin: this.prevTransformOrigin,
+          transition: this.prevTransition,
+          pointerEvents: this.prevPointerEvents
+        });
+    };
   }
   const componentName = `ba-bubble-explosion-${v4_default()}`;
   customElements.define(componentName, BE);

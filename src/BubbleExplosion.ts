@@ -31,9 +31,25 @@ export const BubbleExplosion = ({
 
     container: HTMLElement
 
+    prevTransition: string
+
+    prevTranform: string
+
+    prevOpacity: string
+
+    prevTransformOrigin: string
+
+    prevPointerEvents: string
+
     constructor() {
       super()
       this.attachShadow({ mode: 'open' })
+
+      this.prevTransition = element.style.transition
+      this.prevTranform = element.style.transform
+      this.prevOpacity = element.style.opacity
+      this.prevTransformOrigin = element.style.transformOrigin
+      this.prevPointerEvents = element.style.pointerEvents
 
       createElement({
         tag: 'style',
@@ -71,7 +87,7 @@ export const BubbleExplosion = ({
               ? 'top'
               : 'middle',
           transition: `
-          ${element.style.transition ? `${element.style.transition},` : ''}
+          ${this.prevTransition ? `${this.prevTransition},` : ''}
           opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
           transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
           font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`,
@@ -79,7 +95,7 @@ export const BubbleExplosion = ({
       else
         updateStyle(element, {
           transition: `
-          ${element.style.transition ? `${element.style.transition},` : ''}
+          ${this.prevTransition ? `${this.prevTransition},` : ''}
           opacity ${elementLifeSpan}ms ease-in-out, 
           transform ${elementLifeSpan}ms ease-in-out,
           font-size ${elementLifeSpan}ms ease-in-out`,
@@ -142,7 +158,8 @@ export const BubbleExplosion = ({
             new Array(amount).fill(null).map(() => this.spawnBubble(rect))
           )
 
-          resolve('ok')
+          this.cleanUp()
+          resolve('done')
         }
         // put on bottom call-stack
         setTimeout(call)
@@ -223,6 +240,17 @@ export const BubbleExplosion = ({
           resolve('ok')
         }, duration)
       })
+
+    cleanUp = () => {
+      if (isAppearing)
+        updateStyle(element, {
+          transform: this.prevTranform,
+          opacity: this.prevOpacity,
+          transformOrigin: this.prevTransformOrigin,
+          transition: this.prevTransition,
+          pointerEvents: this.prevPointerEvents,
+        })
+    }
   }
 
   const componentName = `ba-bubble-explosion-${uuidv4()}`
