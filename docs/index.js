@@ -95,10 +95,6 @@ var preloadContent = (root, content) => new Promise((resolve) => {
       src: url || ""
     }
   });
-  if (preload.complete) {
-    console.info("[BWA] already loaded");
-    return resolve("ok");
-  }
   preload.addEventListener("load", () => {
     console.info("[BWA] pre-loaded");
     root.removeChild(preload);
