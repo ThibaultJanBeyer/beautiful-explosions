@@ -239,7 +239,6 @@ var BubbleExplosion = ({
           }
           if (particles?.direction === "down") {
             translateY = this.randomTranslateInt("y", size * 2, rect);
-            translateY *= -1;
           }
         }
         css += `
