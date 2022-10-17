@@ -8,14 +8,14 @@ import { randomInt } from './helpers/random'
 
 export const BubbleExplosion = ({
   element,
-  eventListener = 'click',
+  eventListener,
   content,
   particles,
   areaSize,
   isAppearing,
 }: {
   element: HTMLElement
-  eventListener?: string | null
+  eventListener?: string
   content?: CSSStyleDeclaration['content']
   particles: { size?: number; direction?: 'up' | 'down'; amount?: number }
   areaSize?: { x?: number; y?: number }

@@ -16,17 +16,17 @@
   <div id="beci" style="display: inline-block;">Click Me</div>
   <h2>Bubble Explosion With Custom Content & Direction Down</h2>
   <div id="becd" style="display: inline-block;">Click Me</div>
-  <h2>Bubble Appearance Direction Up</h2>
+  <h2>Bubble Appearance Programmatically Direction Up</h2>
   <div id="becu_trigger" style="display: inline-block;">Click Me</div>
   <div id="becu" style="display: inline-block;">I’m here!</div>
 </body>
 <script type="module">
   import { BubbleExplosion } from './index.js'
-  BubbleExplosion({ element: document.querySelector('#be') })
-  BubbleExplosion({ element: document.querySelector('#bec'), content: '"✅"' })
-  BubbleExplosion({ element: document.querySelector('#beci'), content: 'url(https://cataas.com/cat)' })
-  BubbleExplosion({ element: document.querySelector('#becd'), content: '"❌"', particles: { direction: 'down' }, areaSize: { height: 100 } })
-  const appear = BubbleExplosion({ element: document.querySelector('#becu'), content: '"🔥"', particles: { direction: 'up' }, isAppearing: true, eventListener: null })
+  BubbleExplosion({ element: document.querySelector('#be'), eventListener: 'click' })
+  BubbleExplosion({ element: document.querySelector('#bec'), content: '"✅"', eventListener: 'click' })
+  BubbleExplosion({ element: document.querySelector('#beci'), content: 'url(https://cataas.com/cat)', eventListener: 'click' })
+  BubbleExplosion({ element: document.querySelector('#becd'), content: '"❌"', particles: { direction: 'down' }, areaSize: { height: 100 }, eventListener: 'click' })
+  const appear = BubbleExplosion({ element: document.querySelector('#becu'), content: '"🔥"', particles: { direction: 'up' }, isAppearing: true })
   document.querySelector('#becu_trigger').addEventListener('click', appear.trigger)
 </script>
 </html>

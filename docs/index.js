@@ -107,7 +107,7 @@ var randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 // src/BubbleExplosion.ts
 var BubbleExplosion = ({
   element,
-  eventListener = "click",
+  eventListener,
   content,
   particles,
   areaSize,

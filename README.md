@@ -11,7 +11,7 @@ Usage:
 ```JavaScript
 const BE = BubbleExplosion({ 
   element: document.querySelector('div'), // the element that will get animated
-  eventListener: 'click', // optional, event on which the animation will start, default is 'click'
+  eventListener: 'click', // optional, event on which the animation will start
   content: '✅', // optional, this is the valid CSS content, default are bubbles (more info: https://developer.mozilla.org/en-US/docs/Web/CSS/content)
   particles: { // optional, particles settings
     size: 10, // optional, size of the explosion particles
