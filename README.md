@@ -26,6 +26,8 @@ const BE = BubbleExplosion({
 })
 
 BE.trigger() // if no event listener is how you can trigger the animation programmatically
+
+BE.destroy() // cleans up the animation by removing the nodes from the DOM
 ```
 
 See examples section:

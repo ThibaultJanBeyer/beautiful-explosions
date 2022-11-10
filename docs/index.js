@@ -308,7 +308,8 @@ var BubbleExplosion = ({
   const shadowElement = createElement({ tag: componentName });
   document.body.append(shadowElement);
   return {
-    trigger: shadowElement.trigger
+    trigger: shadowElement.trigger,
+    destroy: () => document.body.removeChild(shadowElement)
   };
 };
 export {

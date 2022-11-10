@@ -14,4 +14,5 @@ export declare const BubbleExplosion: ({ element, eventListener, content, partic
     isAppearing?: boolean | undefined;
 }) => {
     trigger: () => void;
+    destroy: () => void;
 };

@@ -20,7 +20,7 @@ export const BubbleExplosion = ({
   particles: { size?: number; direction?: 'up' | 'down'; amount?: number }
   areaSize?: { x?: number; y?: number }
   isAppearing?: boolean
-}): { trigger: () => void } => {
+}): { trigger: () => void; destroy: () => void } => {
   const duration = 800
   const elementLifeSpan = duration / 4
 
@@ -259,5 +259,6 @@ export const BubbleExplosion = ({
 
   return {
     trigger: shadowElement.trigger,
+    destroy: () => document.body.removeChild(shadowElement),
   }
 }
