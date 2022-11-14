@@ -58,7 +58,7 @@ export const BubbleExplosion = ({
         .circle { border-radius: 50% }
 
         .bubble {
-          position: absolute;
+          position: fixed;
           border: 2px solid red;
           transform: scale(0, 0);
           z-index: 1;
@@ -201,9 +201,15 @@ export const BubbleExplosion = ({
           }
 
           @keyframes bMove--${index} {
-            0% { transform: rotate(${tempR}deg) translate3d(${startTranslateX}px, ${startTranslateY}px, 0) scale(0, 0); opacity: 1; }
-            50% { opacity: 0.7; }
-            100% {
+            0% {
+              transform:
+                rotate(${tempR}deg)
+                translate3d(${startTranslateX}px, ${startTranslateY}px, 0)
+                scale(0, 0);
+              opacity: 1; 
+            } 50% { 
+              opacity: 0.7; 
+            } 100% {
               transform:
                 rotate(${tempR}deg)
                 translate3d(
