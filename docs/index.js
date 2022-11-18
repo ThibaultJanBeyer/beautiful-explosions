@@ -215,7 +215,7 @@ var BubbleExplosion = ({
           new Array(amount).fill(null).map(() => this.spawnBubble(rect))
         );
         this.cleanUp();
-        resolve("done");
+        resolve(this);
       };
       setTimeout(call, 100);
     });

@@ -157,7 +157,7 @@ export const BubbleExplosion = ({
           )
 
           this.cleanUp()
-          resolve('done')
+          resolve(this)
         }
 
         // put on bottom call-stack & wait for other potential animations to end
