@@ -1,13 +1,18 @@
-export const updateStyle = (
+export const requestPaintFinishCallback = () =>
+  new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve)))
+
+export const updateStyle = async (
   el: HTMLElement,
   style: Partial<ElementCSSInlineStyle['style']>
-): void => {
+): Promise<void> => {
   for (const key in style) {
     if (Object.prototype.hasOwnProperty.call(style, key)) {
       const value = style[key]
       el.style[key] = value as string
     }
   }
+  // debounce for paint to apply
+  await requestPaintFinishCallback()
 }
 
 export const createElement = ({

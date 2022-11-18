@@ -3,6 +3,7 @@ import {
   updateStyle,
   createElement,
   preloadContent,
+  requestPaintFinishCallback,
 } from './helpers/dom-element'
 import { randomInt } from './helpers/random'
 
@@ -111,58 +112,55 @@ export const BubbleExplosion = ({
         (areaSize && areaSize[xy]) || Math.max(rect.width, 50)
       )
 
-    trigger = async () =>
-      new Promise((resolve) => {
-        const call = async () => {
-          updateStyle(element, {
-            transition: `
-              ${this.prevTransition ? `${this.prevTransition},` : ''}
-              opacity ${elementLifeSpan}ms ease-in-out, 
-              transform ${elementLifeSpan}ms ease-in-out,
-              font-size ${elementLifeSpan}ms ease-in-out`,
-          })
-
-          const rect = element.getBoundingClientRect()
-          const amount = particles?.amount || 25
-
-          if (!this.shadowRoot) return
-
-          await preloadContent(this.shadowRoot, content)
-
-          createElement({
-            tag: 'style',
-            appendElement: this.shadowRoot,
-            value: this.getBubbleCss(amount, rect),
-          })
-
-          if (isAppearing)
-            updateStyle(element, {
-              transform: element.style.transform.replace(
-                'scale(1, 0)',
-                'scale(1, 1)'
-              ),
-              opacity: '1',
-            })
-          else
-            updateStyle(element, {
-              transform: `${element.style.transform} scale(0, 0)`,
-              pointerEvents: 'none',
-            })
-
-          if (eventListener)
-            element.removeEventListener(eventListener, this.trigger)
-
-          await Promise.all(
-            new Array(amount).fill(null).map(() => this.spawnBubble(rect))
-          )
-
-          this.cleanUp()
-          resolve(this)
-        }
-
-        // put on bottom call-stack & wait for other potential animations to end
-        setTimeout(call, 100)
+    trigger = async () => {
+      // wait for previous paint to finish before triggering new one
+      await requestPaintFinishCallback()
+      await updateStyle(element, {
+        transition: `
+          ${this.prevTransition ? `${this.prevTransition},` : ''}
+          opacity ${elementLifeSpan}ms ease-in-out, 
+          transform ${elementLifeSpan}ms ease-in-out,
+          font-size ${elementLifeSpan}ms ease-in-out`,
       })
+
+      const rect = element.getBoundingClientRect()
+      const amount = particles?.amount || 25
+
+      if (!this.shadowRoot) return
+
+      await preloadContent(this.shadowRoot, content)
+
+      createElement({
+        tag: 'style',
+        appendElement: this.shadowRoot,
+        value: this.getBubbleCss(amount, rect),
+      })
+
+      if (isAppearing)
+        await updateStyle(element, {
+          transform: element.style.transform.replace(
+            'scale(1, 0)',
+            'scale(1, 1)'
+          ),
+          opacity: '1',
+        })
+      else
+        await updateStyle(element, {
+          transform: `${element.style.transform} scale(0, 0)`,
+          pointerEvents: 'none',
+        })
+
+      if (eventListener)
+        element.removeEventListener(eventListener, this.trigger)
+
+      await Promise.all(
+        new Array(amount).fill(null).map(() => this.spawnBubble(rect))
+      )
+
+      this.cleanUp()
+      // wait for the end of the paint
+      await requestPaintFinishCallback()
+    }
 
     getBubbleCss = (amount: number, rect: DOMRect): string => {
       const size =

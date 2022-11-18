@@ -47,13 +47,15 @@ function v4(options, buf, offset) {
 var v4_default = v4;
 
 // src/helpers/dom-element.ts
-var updateStyle = (el, style) => {
+var requestPaintFinishCallback = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve)));
+var updateStyle = async (el, style) => {
   for (const key in style) {
     if (Object.prototype.hasOwnProperty.call(style, key)) {
       const value = style[key];
       el.style[key] = value;
     }
   }
+  await requestPaintFinishCallback();
 };
 var createElement = ({
   tag = "",
@@ -177,48 +179,46 @@ var BubbleExplosion = ({
       size / 2,
       areaSize && areaSize[xy] || Math.max(rect.width, 50)
     );
-    trigger = async () => new Promise((resolve) => {
-      const call = async () => {
-        updateStyle(element, {
-          transition: `
-              ${this.prevTransition ? `${this.prevTransition},` : ""}
-              opacity ${elementLifeSpan}ms ease-in-out, 
-              transform ${elementLifeSpan}ms ease-in-out,
-              font-size ${elementLifeSpan}ms ease-in-out`
+    trigger = async () => {
+      await requestPaintFinishCallback();
+      await updateStyle(element, {
+        transition: `
+          ${this.prevTransition ? `${this.prevTransition},` : ""}
+          opacity ${elementLifeSpan}ms ease-in-out, 
+          transform ${elementLifeSpan}ms ease-in-out,
+          font-size ${elementLifeSpan}ms ease-in-out`
+      });
+      const rect = element.getBoundingClientRect();
+      const amount = particles?.amount || 25;
+      if (!this.shadowRoot)
+        return;
+      await preloadContent(this.shadowRoot, content);
+      createElement({
+        tag: "style",
+        appendElement: this.shadowRoot,
+        value: this.getBubbleCss(amount, rect)
+      });
+      if (isAppearing)
+        await updateStyle(element, {
+          transform: element.style.transform.replace(
+            "scale(1, 0)",
+            "scale(1, 1)"
+          ),
+          opacity: "1"
         });
-        const rect = element.getBoundingClientRect();
-        const amount = particles?.amount || 25;
-        if (!this.shadowRoot)
-          return;
-        await preloadContent(this.shadowRoot, content);
-        createElement({
-          tag: "style",
-          appendElement: this.shadowRoot,
-          value: this.getBubbleCss(amount, rect)
+      else
+        await updateStyle(element, {
+          transform: `${element.style.transform} scale(0, 0)`,
+          pointerEvents: "none"
         });
-        if (isAppearing)
-          updateStyle(element, {
-            transform: element.style.transform.replace(
-              "scale(1, 0)",
-              "scale(1, 1)"
-            ),
-            opacity: "1"
-          });
-        else
-          updateStyle(element, {
-            transform: `${element.style.transform} scale(0, 0)`,
-            pointerEvents: "none"
-          });
-        if (eventListener)
-          element.removeEventListener(eventListener, this.trigger);
-        await Promise.all(
-          new Array(amount).fill(null).map(() => this.spawnBubble(rect))
-        );
-        this.cleanUp();
-        resolve(this);
-      };
-      setTimeout(call, 100);
-    });
+      if (eventListener)
+        element.removeEventListener(eventListener, this.trigger);
+      await Promise.all(
+        new Array(amount).fill(null).map(() => this.spawnBubble(rect))
+      );
+      this.cleanUp();
+      await requestPaintFinishCallback();
+    };
     getBubbleCss = (amount, rect) => {
       const size = particles?.size || Math.max(Math.min(rect.height, rect.width), 25);
       let css = "";
