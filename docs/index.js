@@ -48,14 +48,13 @@ var v4_default = v4;
 
 // src/helpers/dom-element.ts
 var requestPaintFinishCallback = () => new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve)));
-var updateStyle = async (el, style) => {
+var updateStyle = (el, style) => {
   for (const key in style) {
     if (Object.prototype.hasOwnProperty.call(style, key)) {
       const value = style[key];
       el.style[key] = value;
     }
   }
-  await requestPaintFinishCallback();
 };
 var createElement = ({
   tag = "",
@@ -188,6 +187,7 @@ var BubbleExplosion = ({
           transform ${elementLifeSpan}ms ease-in-out,
           font-size ${elementLifeSpan}ms ease-in-out`
       });
+      await requestPaintFinishCallback();
       const rect = element.getBoundingClientRect();
       const amount = particles?.amount || 25;
       if (!this.shadowRoot)
@@ -199,7 +199,7 @@ var BubbleExplosion = ({
         value: this.getBubbleCss(amount, rect)
       });
       if (isAppearing)
-        await updateStyle(element, {
+        updateStyle(element, {
           transform: element.style.transform.replace(
             "scale(1, 0)",
             "scale(1, 1)"
@@ -207,7 +207,7 @@ var BubbleExplosion = ({
           opacity: "1"
         });
       else
-        await updateStyle(element, {
+        updateStyle(element, {
           transform: `${element.style.transform} scale(0, 0)`,
           pointerEvents: "none"
         });
@@ -216,7 +216,7 @@ var BubbleExplosion = ({
       await Promise.all(
         new Array(amount).fill(null).map(() => this.spawnBubble(rect))
       );
-      this.cleanUp();
+      await this.cleanUp();
       await requestPaintFinishCallback();
     };
     getBubbleCss = (amount, rect) => {
@@ -295,7 +295,8 @@ var BubbleExplosion = ({
         resolve("ok");
       }, duration);
     });
-    cleanUp = () => {
+    cleanUp = async () => {
+      await requestPaintFinishCallback();
       if (isAppearing)
         updateStyle(element, {
           transform: this.prevTranform,

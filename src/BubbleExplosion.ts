@@ -122,6 +122,8 @@ export const BubbleExplosion = ({
           transform ${elementLifeSpan}ms ease-in-out,
           font-size ${elementLifeSpan}ms ease-in-out`,
       })
+      // wait for paint to apply
+      await requestPaintFinishCallback()
 
       const rect = element.getBoundingClientRect()
       const amount = particles?.amount || 25
@@ -137,7 +139,7 @@ export const BubbleExplosion = ({
       })
 
       if (isAppearing)
-        await updateStyle(element, {
+        updateStyle(element, {
           transform: element.style.transform.replace(
             'scale(1, 0)',
             'scale(1, 1)'
@@ -145,7 +147,7 @@ export const BubbleExplosion = ({
           opacity: '1',
         })
       else
-        await updateStyle(element, {
+        updateStyle(element, {
           transform: `${element.style.transform} scale(0, 0)`,
           pointerEvents: 'none',
         })
@@ -157,7 +159,7 @@ export const BubbleExplosion = ({
         new Array(amount).fill(null).map(() => this.spawnBubble(rect))
       )
 
-      this.cleanUp()
+      await this.cleanUp()
       // wait for the end of the paint
       await requestPaintFinishCallback()
     }
@@ -243,7 +245,10 @@ export const BubbleExplosion = ({
         }, duration)
       })
 
-    cleanUp = () => {
+    cleanUp = async () => {
+      // wait for previous paint to finish before triggering new one
+      await requestPaintFinishCallback()
+
       if (isAppearing)
         updateStyle(element, {
           transform: this.prevTranform,

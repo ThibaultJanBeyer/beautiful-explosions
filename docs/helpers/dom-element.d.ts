@@ -1,3 +1,4 @@
+export declare const requestPaintFinishCallback: () => Promise<unknown>;
 export declare const updateStyle: (el: HTMLElement, style: Partial<ElementCSSInlineStyle['style']>) => void;
 export declare const createElement: ({ tag, classList, value, appendElement, style, extraArrtibutes, }: {
     tag?: string | undefined;
