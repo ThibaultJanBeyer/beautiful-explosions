@@ -160,12 +160,7 @@ var BubbleExplosion = ({
         updateStyle(element, {
           transform: `${element.style.transform || ""} scale(1, 0)`,
           opacity: "0",
-          transformOrigin: particles?.direction === "up" ? "bottom" : particles?.direction === "down" ? "top" : "middle",
-          transition: `
-          ${this.prevTransition ? `${this.prevTransition},` : ""}
-          opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
-          transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
-          font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`
+          transformOrigin: particles?.direction === "up" ? "bottom" : particles?.direction === "down" ? "top" : "middle"
         });
       else
         updateStyle(element, {
@@ -188,6 +183,13 @@ var BubbleExplosion = ({
       areaSize && areaSize[xy] || Math.max(rect.width, 50)
     );
     trigger = async () => new Promise((resolve) => {
+      updateStyle(element, {
+        transition: `
+            ${this.prevTransition ? `${this.prevTransition},` : ""}
+            opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
+            transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
+            font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`
+      });
       const call = async () => {
         const rect = element.getBoundingClientRect();
         const amount = particles?.amount || 25;

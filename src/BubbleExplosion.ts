@@ -86,11 +86,6 @@ export const BubbleExplosion = ({
               : particles?.direction === 'down'
               ? 'top'
               : 'middle',
-          transition: `
-          ${this.prevTransition ? `${this.prevTransition},` : ''}
-          opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
-          transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
-          font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`,
         })
       else
         updateStyle(element, {
@@ -123,6 +118,14 @@ export const BubbleExplosion = ({
 
     trigger = async () =>
       new Promise((resolve) => {
+        updateStyle(element, {
+          transition: `
+            ${this.prevTransition ? `${this.prevTransition},` : ''}
+            opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
+            transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
+            font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`,
+        })
+
         const call = async () => {
           const rect = element.getBoundingClientRect()
           const amount = particles?.amount || 25
@@ -161,6 +164,7 @@ export const BubbleExplosion = ({
           this.cleanUp()
           resolve('done')
         }
+
         // put on bottom call-stack
         setTimeout(call)
       })
