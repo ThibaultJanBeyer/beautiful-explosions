@@ -164,11 +164,6 @@ var BubbleExplosion = ({
         });
       else
         updateStyle(element, {
-          transition: `
-          ${this.prevTransition ? `${this.prevTransition},` : ""}
-          opacity ${elementLifeSpan}ms ease-in-out, 
-          transform ${elementLifeSpan}ms ease-in-out,
-          font-size ${elementLifeSpan}ms ease-in-out`,
           transformOrigin: particles?.direction === "up" ? "top" : particles?.direction === "down" ? "bottom" : "middle"
         });
       this.container = createElement({
@@ -186,9 +181,9 @@ var BubbleExplosion = ({
       updateStyle(element, {
         transition: `
             ${this.prevTransition ? `${this.prevTransition},` : ""}
-            opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
-            transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
-            font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`
+            opacity ${elementLifeSpan}ms ease-in-out, 
+            transform ${elementLifeSpan}ms ease-in-out,
+            font-size ${elementLifeSpan}ms ease-in-out`
       });
       const call = async () => {
         const rect = element.getBoundingClientRect();
@@ -222,7 +217,7 @@ var BubbleExplosion = ({
         this.cleanUp();
         resolve("done");
       };
-      setTimeout(call, 1e4);
+      setTimeout(call, 100);
     });
     getBubbleCss = (amount, rect) => {
       const size = particles?.size || Math.max(Math.min(rect.height, rect.width), 25);

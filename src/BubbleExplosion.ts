@@ -89,11 +89,6 @@ export const BubbleExplosion = ({
         })
       else
         updateStyle(element, {
-          transition: `
-          ${this.prevTransition ? `${this.prevTransition},` : ''}
-          opacity ${elementLifeSpan}ms ease-in-out, 
-          transform ${elementLifeSpan}ms ease-in-out,
-          font-size ${elementLifeSpan}ms ease-in-out`,
           transformOrigin:
             particles?.direction === 'up'
               ? 'top'
@@ -121,9 +116,9 @@ export const BubbleExplosion = ({
         updateStyle(element, {
           transition: `
             ${this.prevTransition ? `${this.prevTransition},` : ''}
-            opacity ${elementLifeSpan}ms ease-in-out ${duration / 6}ms, 
-            transform ${elementLifeSpan}ms ease-in-out ${duration / 6}ms,
-            font-size ${elementLifeSpan}ms ease-in-out ${duration / 6}ms`,
+            opacity ${elementLifeSpan}ms ease-in-out, 
+            transform ${elementLifeSpan}ms ease-in-out,
+            font-size ${elementLifeSpan}ms ease-in-out`,
         })
 
         const call = async () => {
@@ -165,8 +160,8 @@ export const BubbleExplosion = ({
           resolve('done')
         }
 
-        // put on bottom call-stack
-        setTimeout(call, 10000)
+        // put on bottom call-stack & wait for other potential animations to end
+        setTimeout(call, 100)
       })
 
     getBubbleCss = (amount: number, rect: DOMRect): string => {
