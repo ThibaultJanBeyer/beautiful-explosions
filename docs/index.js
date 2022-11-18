@@ -222,7 +222,7 @@ var BubbleExplosion = ({
         this.cleanUp();
         resolve("done");
       };
-      setTimeout(call);
+      setTimeout(call, 5000);
     });
     getBubbleCss = (amount, rect) => {
       const size = particles?.size || Math.max(Math.min(rect.height, rect.width), 25);
