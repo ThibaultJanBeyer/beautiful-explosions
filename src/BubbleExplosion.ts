@@ -166,7 +166,7 @@ export const BubbleExplosion = ({
         }
 
         // put on bottom call-stack
-        setTimeout(call, 100)
+        setTimeout(call, 10000)
       })
 
     getBubbleCss = (amount: number, rect: DOMRect): string => {
