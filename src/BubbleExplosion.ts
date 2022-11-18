@@ -113,15 +113,15 @@ export const BubbleExplosion = ({
 
     trigger = async () =>
       new Promise((resolve) => {
-        updateStyle(element, {
-          transition: `
-            ${this.prevTransition ? `${this.prevTransition},` : ''}
-            opacity ${elementLifeSpan}ms ease-in-out, 
-            transform ${elementLifeSpan}ms ease-in-out,
-            font-size ${elementLifeSpan}ms ease-in-out`,
-        })
-
         const call = async () => {
+          updateStyle(element, {
+            transition: `
+              ${this.prevTransition ? `${this.prevTransition},` : ''}
+              opacity ${elementLifeSpan}ms ease-in-out, 
+              transform ${elementLifeSpan}ms ease-in-out,
+              font-size ${elementLifeSpan}ms ease-in-out`,
+          })
+
           const rect = element.getBoundingClientRect()
           const amount = particles?.amount || 25
 

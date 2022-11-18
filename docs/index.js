@@ -178,14 +178,14 @@ var BubbleExplosion = ({
       areaSize && areaSize[xy] || Math.max(rect.width, 50)
     );
     trigger = async () => new Promise((resolve) => {
-      updateStyle(element, {
-        transition: `
-            ${this.prevTransition ? `${this.prevTransition},` : ""}
-            opacity ${elementLifeSpan}ms ease-in-out, 
-            transform ${elementLifeSpan}ms ease-in-out,
-            font-size ${elementLifeSpan}ms ease-in-out`
-      });
       const call = async () => {
+        updateStyle(element, {
+          transition: `
+              ${this.prevTransition ? `${this.prevTransition},` : ""}
+              opacity ${elementLifeSpan}ms ease-in-out, 
+              transform ${elementLifeSpan}ms ease-in-out,
+              font-size ${elementLifeSpan}ms ease-in-out`
+        });
         const rect = element.getBoundingClientRect();
         const amount = particles?.amount || 25;
         if (!this.shadowRoot)
